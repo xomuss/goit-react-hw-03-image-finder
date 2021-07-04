@@ -8,6 +8,8 @@ import Loader from 'react-loader-spinner';
 import Modal from './components/Modal';
 
 class App extends Component {
+  static propTypes = {};
+
   state = {
     pictures: [],
     currentPage: 1,
@@ -28,10 +30,6 @@ class App extends Component {
     if (prevState.searchQuery !== this.state.searchQuery) {
       this.fetchPictures();
     }
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: 'smooth',
-    });
   }
 
   onChangeQuery = query => {
@@ -51,12 +49,16 @@ class App extends Component {
 
     picturesApi
       .fetchPictures(options)
-      .then(hits =>
+      .then(hits => {
         this.setState(prevState => ({
           pictures: [...prevState.pictures, ...hits],
           currentPage: prevState.currentPage + 1,
-        })),
-      )
+        }));
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth',
+        });
+      })
       .catch(error => this.setState({ error }))
       .finally(() => this.setState({ isLoading: false }));
   };
